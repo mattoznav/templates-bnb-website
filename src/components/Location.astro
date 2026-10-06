@@ -1,0 +1,194 @@
+---
+// "Getting here": an illustrated map of the (fictional) village with the routes
+// to the house, next to the address and travel times from site.ts.
+// For a real property, keep the layout and swap the map for a screenshot or an
+// embed of the real area; travel times and the maps link live in site.ts.
+import train from "@phosphor-icons/core/assets/regular/train.svg?raw";
+import car from "@phosphor-icons/core/assets/regular/car.svg?raw";
+import walk from "@phosphor-icons/core/assets/regular/person-simple-walk.svg?raw";
+import arrow from "@phosphor-icons/core/assets/regular/arrow-up-right.svg?raw";
+import { site } from "../data/site";
+
+const icons: Record<string, string> = { train, car, walk };
+---
+
+<section id="location" class="location" aria-labelledby="location-title">
+  <figure class="location__map">
+    <svg viewBox="0 0 800 600" role="img" aria-labelledby="map-title map-desc">
+      <title id="map-title">Map of Larchford</title>
+      <desc id="map-desc">
+        Alder House stands at the top of Mill Lane, between the village and Larch Wood. The station is at the bottom of the
+        village, a ten minute walk away, and the river path runs along the edge of the wood.
+      </desc>
+      <defs>
+        <pattern id="canopy" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+          <circle cx="6" cy="6" r="5" class="map-canopy" />
+          <circle cx="17" cy="16" r="4" class="map-canopy" />
+        </pattern>
+        <pattern id="furrows" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)">
+          <line x1="0" y1="0" x2="0" y2="9" class="map-furrow" />
+        </pattern>
+      </defs>
+
+      <rect width="800" height="600" class="map-land" />
+
+      <!-- Fields -->
+      <path d="M520 360 L700 330 L740 470 L560 500 Z" class="map-field" />
+      <path d="M90 420 L250 400 L270 520 L110 545 Z" class="map-field" />
+      <path d="M520 360 L700 330 L740 470 L560 500 Z" fill="url(#furrows)" />
+      <path d="M90 420 L250 400 L270 520 L110 545 Z" fill="url(#furrows)" />
+
+      <!-- Orchard and farm -->
+      <g class="map-orchard">
+        <circle cx="560" cy="150" r="8" />
+        <circle cx="588" cy="150" r="8" />
+        <circle cx="616" cy="150" r="8" />
+        <circle cx="644" cy="150" r="8" />
+        <circle cx="672" cy="150" r="8" />
+        <circle cx="700" cy="150" r="8" />
+        <circle cx="574" cy="174" r="8" />
+        <circle cx="602" cy="174" r="8" />
+        <circle cx="630" cy="174" r="8" />
+        <circle cx="658" cy="174" r="8" />
+        <circle cx="686" cy="174" r="8" />
+        <circle cx="714" cy="174" r="8" />
+        <circle cx="560" cy="198" r="8" />
+        <circle cx="588" cy="198" r="8" />
+        <circle cx="616" cy="198" r="8" />
+        <circle cx="644" cy="198" r="8" />
+        <circle cx="672" cy="198" r="8" />
+        <circle cx="700" cy="198" r="8" />
+        <circle cx="574" cy="222" r="8" />
+        <circle cx="602" cy="222" r="8" />
+        <circle cx="630" cy="222" r="8" />
+        <circle cx="658" cy="222" r="8" />
+        <circle cx="686" cy="222" r="8" />
+        <circle cx="714" cy="222" r="8" />
+      </g>
+      <g class="map-village">
+        <rect x="640" y="400" width="34" height="20" rx="2" />
+        <rect x="680" y="396" width="20" height="28" rx="2" />
+        <rect x="650" y="426" width="24" height="14" rx="2" />
+      </g>
+
+      <!-- Larch Wood -->
+      <path
+        d="M40 70 C120 30 260 40 330 70 C390 95 420 150 400 205 C380 255 300 250 250 275 C190 305 110 290 70 240 C30 190 10 120 40 70 Z"
+        class="map-wood"
+      />
+      <path
+        d="M40 70 C120 30 260 40 330 70 C390 95 420 150 400 205 C380 255 300 250 250 275 C190 305 110 290 70 240 C30 190 10 120 40 70 Z"
+        fill="url(#canopy)"
+      />
+
+      <!-- River and its path -->
+      <path d="M470 -10 C450 90 500 160 470 240 C440 320 360 360 380 450 C395 520 470 560 460 610" class="map-river" />
+      <path d="M445 0 C425 90 470 160 440 240 C410 320 330 360 350 450 C362 510 430 560 425 610" class="map-footpath" />
+
+      <!-- Roads -->
+      <path d="M-10 330 C160 320 300 360 470 345 C600 335 700 300 810 290" class="map-road map-road--main" />
+      <path d="M300 352 C305 300 330 270 360 245" class="map-road" />
+      <path d="M520 342 C540 400 560 450 600 520" class="map-road" />
+
+      <!-- Railway and station -->
+      <path d="M-10 560 C200 545 420 535 810 520" class="map-rail" />
+      <path d="M-10 560 C200 545 420 535 810 520" class="map-rail-ties" />
+      <rect x="276" y="523" width="58" height="22" rx="4" class="map-station" />
+
+      <!-- Village -->
+      <g class="map-village">
+        <rect x="230" y="380" width="26" height="18" rx="2" />
+        <rect x="262" y="384" width="18" height="22" rx="2" />
+        <rect x="286" y="376" width="30" height="16" rx="2" />
+        <rect x="324" y="384" width="20" height="20" rx="2" />
+        <rect x="236" y="408" width="22" height="16" rx="2" />
+        <rect x="266" y="414" width="30" height="18" rx="2" />
+        <rect x="304" y="406" width="18" height="24" rx="2" />
+        <rect x="330" y="412" width="26" height="16" rx="2" />
+        <rect x="250" y="440" width="24" height="18" rx="2" />
+        <rect x="282" y="444" width="20" height="16" rx="2" />
+        <rect x="312" y="440" width="28" height="20" rx="2" />
+        <rect x="200" y="300" width="22" height="16" rx="2" />
+        <rect x="170" y="292" width="18" height="20" rx="2" />
+      </g>
+
+      <!-- Routes: drawn in when the section comes into view -->
+      <path class="map-route map-route--train" pathLength="1" d="M305 523 C310 480 300 440 300 405 C300 370 305 330 330 290 C345 265 352 250 362 238" />
+      <path class="map-route map-route--car" pathLength="1" d="M-10 330 C160 320 300 360 470 345 M300 352 C305 300 330 270 360 245" />
+      <path class="map-route map-route--walk" pathLength="1" d="M372 228 C390 215 410 205 430 190 C440 150 455 110 450 60" />
+
+      <!-- Alder House -->
+      <g class="map-house" transform="translate(352 196)">
+        <rect x="0" y="10" width="48" height="30" rx="3" class="map-house__body" />
+        <path d="M-4 12 L24 -6 L52 12 Z" class="map-house__roof" />
+        <circle cx="24" cy="58" r="7" class="map-house__pin" />
+      </g>
+
+      <!-- Labels -->
+      <text x="150" y="170" class="map-label map-label--area">Larch Wood</text>
+      <text x="410" y="186" class="map-label map-label--house" text-anchor="end">Alder House</text>
+      <text x="290" y="485" class="map-label" text-anchor="middle">Larchford</text>
+      <text x="305" y="590" class="map-label" text-anchor="middle">Station</text>
+      <text x="345" y="300" class="map-label map-label--small" transform="rotate(-50 345 300)">Mill Lane</text>
+      <text x="505" y="80" class="map-label map-label--small map-label--water" transform="rotate(-80 505 80)">Larch Brook</text>
+      <text x="40" y="318" class="map-label map-label--small">To the city</text>
+      <text x="630" y="270" class="map-label map-label--small" text-anchor="middle">Orchard</text>
+      <text x="672" y="462" class="map-label map-label--small" text-anchor="middle">Hollins Farm</text>
+
+      <!-- North -->
+      <g transform="translate(740 60)" class="map-north">
+        <circle r="20" />
+        <path d="M0 -12 L6 6 L0 2 L-6 6 Z" />
+        <text y="38" text-anchor="middle">N</text>
+      </g>
+    </svg>
+    <figcaption class="visually-hidden">Illustrated map of Larchford, not to scale.</figcaption>
+  </figure>
+
+  <div class="location__info">
+    <h2 id="location-title">Getting here</h2>
+    <p class="location__intro">A quiet lane at the top of the village, an hour from the city by train or car.</p>
+    <address class="location__address">
+      {site.address.map((line) => <span>{line}</span>)}
+    </address>
+
+    <ul class="travel">
+      {
+        site.travel.map((item) => (
+          <li class="travel__item" data-mode={item.mode}>
+            <span class="travel__icon" set:html={icons[item.mode]} aria-hidden="true" />
+            <div class="travel__text">
+              <h3>
+                {item.title}
+                <span class="travel__time">{item.time}</span>
+              </h3>
+              <p>{item.detail}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="button location__maps" href={site.mapsUrl} rel="noopener" target="_blank">
+      Open in Maps
+      <span class="button__icon" set:html={arrow} aria-hidden="true" />
+    </a>
+  </div>
+</section>
+
+<script>
+  // Draw the routes once, when the map scrolls into view
+  const map = document.querySelector<HTMLElement>(".location__map");
+  if (map) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          map.classList.add("is-drawn");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(map);
+  }
+</script>

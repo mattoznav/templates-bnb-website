@@ -1,0 +1,820 @@
+:root {
+  --paper: #f4efe6;
+  --paper-2: #ebe3d4;
+  --card: rgb(250 247 241 / 0.94);
+  --ink: #23271f;
+  --ink-2: #565b50;
+  --line: rgb(35 39 31 / 0.14);
+  --sage: #4f6b55;
+  --sage-2: #a7b49c;
+  --clay: #b4643f;
+  --serif: "Newsreader Variable", Georgia, serif;
+  --sans: "Manrope Variable", system-ui, sans-serif;
+  --radius: 18px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --load: 0%;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* The map section's paper background reaches the viewport edges */
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+}
+
+h2 {
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+}
+
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 50;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 8px;
+}
+
+.skip:focus {
+  top: 16px;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+/* ------------------------------------------------------------------ buttons */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.button:hover {
+  background: var(--sage);
+  border-color: var(--sage);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--ink);
+}
+
+.button--ghost:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.button--small {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 0.875rem;
+}
+
+/* ------------------------------------------------------------------- topbar */
+
+.topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px var(--gutter);
+  background: linear-gradient(rgb(244 239 230 / 0.85), rgb(244 239 230 / 0));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  text-decoration: none;
+}
+
+.brand svg {
+  width: 28px;
+  height: 28px;
+  color: var(--sage);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 22px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.topbar nav a {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.topbar nav a:hover {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .topbar nav {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------- stage */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #dfe6e4;
+}
+
+.stage canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* Paper wash behind the opening title, so it stays readable over the house */
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(244 239 230 / 0.92) 0%, rgb(244 239 230 / 0.6) 34%, rgb(244 239 230 / 0) 62%);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+html:not([data-stop="arrival"]) .stage::after {
+  opacity: 0;
+}
+
+@media (max-width: 760px) {
+  .stage::after {
+    background: linear-gradient(0deg, rgb(244 239 230 / 0.95) 0%, rgb(244 239 230 / 0.7) 40%, rgb(244 239 230 / 0) 70%);
+  }
+}
+
+.stage__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.8s ease;
+}
+
+html[data-tour="ready"] .stage__poster {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tour-loader {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  translate: -50% 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: opacity 0.5s;
+}
+
+.tour-loader[data-done="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tour-loader__bar {
+  width: 160px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ink) var(--load), var(--line) var(--load));
+}
+
+/* -------------------------------------------------------------------- stops */
+
+.stops {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.stop {
+  min-height: 150vh;
+  display: flex;
+  align-items: center;
+  padding: 18vh var(--gutter);
+}
+
+.stop--intro:first-child {
+  min-height: 100vh;
+  align-items: flex-end;
+  padding-bottom: 12vh;
+}
+
+.stop--right {
+  justify-content: flex-end;
+}
+
+.stop > * {
+  pointer-events: auto;
+}
+
+.hero {
+  max-width: 760px;
+  display: grid;
+  gap: 18px;
+  padding: 28px 0;
+  text-shadow: 0 1px 20px rgb(244 239 230 / 0.9);
+}
+
+.hero__text {
+  max-width: 34rem;
+  font-size: 1.15rem;
+  color: var(--ink-2);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.hero__actions .button--ghost {
+  background: rgb(244 239 230 / 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.card {
+  width: min(440px, 100%);
+  border-radius: var(--radius);
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 60px -30px rgb(35 39 31 / 0.35), 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+
+.stop--intro .card,
+.stop--outro .card {
+  width: min(520px, 100%);
+}
+
+.card__photo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--paper-2);
+}
+
+.card__body {
+  display: grid;
+  gap: 14px;
+  padding: 24px 26px 26px;
+}
+
+.card__body > p:not(.eyebrow, .price) {
+  color: var(--ink-2);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.amenities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.amenities li {
+  position: relative;
+  padding-left: 16px;
+}
+
+.amenities li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sage-2);
+}
+
+.card__book {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.price {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.price span {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.practical {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.practical div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 12px;
+}
+
+.practical dt {
+  font-weight: 600;
+}
+
+.practical dd {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.practical__line {
+  display: block;
+}
+
+/* --------------------------------------------------------------- floor plan */
+
+.plan svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.plan rect {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 0.06;
+  transition: fill 0.25s;
+}
+
+.plan a:hover rect,
+.plan a:focus-visible rect {
+  fill: var(--paper-2);
+}
+
+.plan a.is-active rect {
+  fill: var(--sage-2);
+}
+
+.plan text {
+  font-family: var(--sans);
+  font-size: 0.55px;
+  font-weight: 600;
+  fill: var(--ink);
+  pointer-events: none;
+}
+
+.plan .plan__bath rect {
+  fill: var(--paper-2);
+  stroke-width: 0.04;
+  pointer-events: none;
+}
+
+.plan .plan__bath text {
+  font-size: 0.38px;
+  font-weight: 500;
+  fill: var(--ink-2);
+}
+
+.plan .plan__outline {
+  fill: none;
+  stroke-width: 0.16;
+  pointer-events: none;
+}
+
+.plan__door {
+  stroke: var(--clay);
+  stroke-width: 0.3;
+}
+
+.plan .plan__front {
+  font-size: 0.45px;
+  font-weight: 500;
+  fill: var(--ink-2);
+}
+
+.minimap {
+  position: fixed;
+  right: var(--gutter);
+  bottom: 24px;
+  z-index: 10;
+  width: 150px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--line);
+  opacity: 0;
+  translate: 0 12px;
+  pointer-events: none;
+  transition: opacity 0.4s, translate 0.4s;
+}
+
+html:is([data-stop="lounge"], [data-stop="breakfast-room"], [data-stop="garden-room"], [data-stop="linen-room"], [data-stop="courtyard-suite"]) .minimap {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------------- footer */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  padding: 28px var(--gutter);
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+/* ---------------------------------------------------------- without the 3D */
+
+html[data-tour="off"] .stop {
+  min-height: auto;
+  padding-block: 8vh;
+}
+
+html[data-tour="off"] .stop--intro:first-child {
+  min-height: 100vh;
+}
+
+html[data-tour="off"] .stops > .stop:not(:first-child) {
+  background: var(--paper);
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------- phones */
+
+@media (max-width: 640px) {
+  .stop {
+    min-height: 170vh;
+    align-items: flex-end;
+    padding-bottom: 6vh;
+  }
+
+  .stop--right {
+    justify-content: center;
+  }
+
+  .card__body {
+    padding: 18px 18px 20px;
+    gap: 10px;
+  }
+
+  .card__photo {
+    aspect-ratio: 16 / 8;
+  }
+
+  .amenities {
+    grid-template-columns: 1fr;
+  }
+
+  .minimap {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------- getting here */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.location {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: clamp(72px, 12vh, 128px) var(--gutter);
+  background: var(--paper);
+}
+
+/* The section sits over the fixed 3D stage: extend the paper to the page edges */
+.location::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+
+.location__map {
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgb(35 39 31 / 0.35);
+}
+
+.location__map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-land { fill: #ebe4d6; }
+.map-field { fill: #e3dbc8; }
+.map-furrow { stroke: #d6ccb5; stroke-width: 2; }
+.map-wood { fill: #c4cfb4; }
+.map-canopy { fill: #aebd9d; }
+.map-orchard circle { fill: #b7c4a5; stroke: #a3b391; stroke-width: 1.5; }
+.map-river { fill: none; stroke: #b9cad2; stroke-width: 18; stroke-linecap: round; }
+.map-footpath { fill: none; stroke: #b9ab8f; stroke-width: 2; stroke-dasharray: 2 7; stroke-linecap: round; }
+.map-road { fill: none; stroke: #fbf8f2; stroke-width: 8; stroke-linecap: round; }
+.map-road--main { stroke-width: 13; }
+.map-rail { fill: none; stroke: #7b7d72; stroke-width: 3; }
+.map-rail-ties { fill: none; stroke: #7b7d72; stroke-width: 9; stroke-dasharray: 2 12; }
+.map-station { fill: var(--ink); }
+.map-village rect { fill: #d7ccb6; }
+.map-house__body { fill: #fbf8f2; stroke: var(--ink); stroke-width: 2; }
+.map-house__roof { fill: var(--clay); }
+.map-house__pin { fill: var(--ink); stroke: #fbf8f2; stroke-width: 3; }
+
+.map-route {
+  fill: none;
+  stroke: var(--clay);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .location__map .map-route {
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, stroke-width 0.3s ease;
+  }
+
+  .location__map.is-drawn .map-route {
+    stroke-dashoffset: 0;
+  }
+
+  .location__map.is-drawn .map-route--car { transition-delay: 0.25s, 0s, 0s; }
+  .location__map.is-drawn .map-route--walk { transition-delay: 0.5s, 0s, 0s; }
+}
+
+/* Pointing at a way of travelling picks out its route on the map */
+.location:has(.travel__item:hover) .map-route { opacity: 0.18; }
+.location:has(.travel__item[data-mode="train"]:hover) .map-route--train,
+.location:has(.travel__item[data-mode="car"]:hover) .map-route--car,
+.location:has(.travel__item[data-mode="walk"]:hover) .map-route--walk {
+  opacity: 1;
+  stroke-width: 7;
+}
+
+.map-label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--ink-2);
+}
+
+.map-label--small { font-size: 12px; font-weight: 500; }
+.map-label--area { font-family: var(--serif); font-style: italic; font-size: 24px; font-weight: 400; fill: #4f6b55; }
+.map-label--house { font-size: 16px; font-weight: 700; fill: var(--ink); }
+.map-label--water { font-family: var(--serif); font-style: italic; fill: #5f7884; }
+.map-north circle { fill: #fbf8f2; stroke: var(--line); }
+.map-north path { fill: var(--ink); }
+.map-north text { font-family: var(--sans); font-size: 12px; font-weight: 700; fill: var(--ink); }
+
+.location__info {
+  display: grid;
+  gap: 20px;
+  max-width: 34rem;
+}
+
+.location__intro {
+  color: var(--ink-2);
+  font-size: 1.05rem;
+}
+
+.location__address {
+  display: grid;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.travel {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.travel__item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  padding: 12px;
+  margin-inline: -12px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.travel__item:hover {
+  background: var(--paper-2);
+}
+
+.travel__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgb(79 107 85 / 0.12);
+  color: var(--sage);
+}
+
+.travel__icon svg,
+.button__icon svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.travel__text h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 2px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.travel__time {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.travel__text p {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+.location__maps {
+  justify-self: start;
+  gap: 10px;
+}
+
+.button__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 900px) {
+  .location {
+    grid-template-columns: 1fr;
+  }
+
+  .location__info {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .map-label { font-size: 22px; }
+  .map-label--small { font-size: 18px; }
+  .map-label--area { font-size: 30px; }
+  .map-label--house { font-size: 22px; }
+}
+
+/* The mini plan would sit on the room card's book button on smaller screens */
+@media (max-width: 1100px), (max-height: 760px) {
+  .minimap {
+    display: none;
+  }
+}

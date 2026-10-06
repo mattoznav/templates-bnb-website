@@ -1,0 +1,127 @@
+---
+import Base from "../layouts/Base.astro";
+import FloorPlan from "../components/FloorPlan.astro";
+import Location from "../components/Location.astro";
+import Tour from "../components/tour/Tour";
+import { stops, rooms, cardSide } from "../data/stops";
+import { site, bookingLink, formatPrice } from "../data/site";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BedAndBreakfast",
+  name: site.name,
+  description: site.description,
+  email: site.email,
+  url: Astro.site?.href,
+  image: new URL("/media/rooms/exterior.webp", Astro.site).href,
+  checkinTime: "15:00",
+  checkoutTime: "11:00",
+  numberOfRooms: rooms.filter((room) => room.kind === "room").length,
+  makesOffer: rooms
+    .filter((room) => room.price)
+    .map((room) => ({
+      "@type": "Offer",
+      name: room.title,
+      price: room.price,
+      priceCurrency: site.currency,
+      url: bookingLink(room),
+    })),
+};
+---
+
+<Base>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <div class="stage">
+    <img class="stage__poster" src="/media/rooms/exterior.webp" alt="" width="1600" height="1000" />
+    <Tour
+      client:only="react"
+      stops={stops.map((stop) => ({ camera: stop.camera, target: stop.target, side: cardSide(stop) }))}
+    />
+  </div>
+
+  <main id="content" class="stops">
+    {
+      stops.map((stop, index) => (
+        <section id={stop.slug} class:list={["stop", `stop--${stop.kind}`, `stop--${cardSide(stop)}`]} data-stop={index}>
+          {stop.slug === "arrival" ? (
+            <div class="hero">
+              <p class="eyebrow">{stop.eyebrow}</p>
+              <h1>{stop.title}</h1>
+              <p class="hero__text">{stop.text}</p>
+              <div class="hero__actions">
+                <a class="button" href={bookingLink()} rel="noopener">Book a stay</a>
+                <a class="button button--ghost" href="#overview">Walk through the house</a>
+              </div>
+            </div>
+          ) : (
+            <article class="card" data-reveal>
+              {stop.photo && (
+                <img class="card__photo" src={stop.photo} alt={`${stop.title}, rendered`} width="1600" height="1000" loading="lazy" decoding="async" />
+              )}
+              <div class="card__body">
+                <h2>{stop.title}</h2>
+                {(stop.kind === "room" || stop.kind === "common") && (
+                  <ul class="facts" aria-label="Key facts">
+                    <li>{stop.eyebrow}</li>
+                    {stop.facts?.map((fact) => <li>{fact}</li>)}
+                  </ul>
+                )}
+                <p>{stop.text}</p>
+                {stop.slug === "overview" && <FloorPlan />}
+                {stop.amenities && (
+                  <ul class="amenities">
+                    {stop.amenities.map((item) => <li>{item}</li>)}
+                  </ul>
+                )}
+                {stop.kind === "outro" && (
+                  <dl class="practical">
+                    <div><dt>Check-in</dt><dd>{site.checkIn}</dd></div>
+                    <div><dt>Check-out</dt><dd>{site.checkOut}</dd></div>
+                    <div><dt>Breakfast</dt><dd>{site.breakfast}</dd></div>
+                    <div>
+                      <dt>Rooms</dt>
+                      <dd>
+                        {rooms.filter((r) => r.price).map((r) => (
+                          <span class="practical__line">{r.title.replace(/^The /, "")} from {formatPrice(r.price!)}</span>
+                        ))}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+                {stop.price && (
+                  <div class="card__book">
+                    <p class="price"><span>from</span> {formatPrice(stop.price)} <span>/ night</span></p>
+                    <a class="button" href={bookingLink(stop)} rel="noopener">Book this room</a>
+                  </div>
+                )}
+                {stop.kind === "outro" && (
+                  <div class="card__book">
+                    <a class="button" href={bookingLink()} rel="noopener">Book a stay</a>
+                    <a class="button button--ghost" href={`mailto:${site.email}`}>{site.email}</a>
+                  </div>
+                )}
+              </div>
+            </article>
+          )}
+        </section>
+      ))
+    }
+  </main>
+
+  <Location />
+
+  <footer class="footer">
+    <p>{site.name}, {site.village}</p>
+    <p>All rooms are rendered from the 3D model of the house.</p>
+    <a href="#arrival">Back to the start</a>
+  </footer>
+
+  <div class="minimap">
+    <FloorPlan variant="mini" />
+  </div>
+</Base>
+
+<script>
+  import "../scripts/scroll";
+</script>

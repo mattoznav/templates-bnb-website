@@ -1,0 +1,46 @@
+---
+// Floor plan drawn from the same layout file the 3D model is built from.
+// Each room links to its stop; scroll.ts highlights the room in view.
+import house from "../data/house.json";
+import { stops } from "../data/stops";
+
+type Props = { variant?: "large" | "mini" };
+const { variant = "large" } = Astro.props;
+const { w, d } = house.footprint;
+const titles = Object.fromEntries(stops.map((stop) => [stop.slug, stop.title.replace(/^The /, "")]));
+// The model's y axis runs from the front of the house to the back; the plan puts the front at the bottom.
+const rooms = house.rooms.map((room) => ({ ...room, top: d - room.y - room.d, title: titles[room.slug] ?? room.slug }));
+const baths = house.baths.map((bath) => ({ ...bath, top: d - bath.y - bath.d }));
+---
+
+<nav class:list={["plan", `plan--${variant}`]} aria-label={variant === "mini" ? "Jump to a room" : "Floor plan"}>
+  <svg viewBox={`-0.4 -0.4 ${w + 0.8} ${d + 1.6}`} role="presentation">
+    {
+      rooms.map((room) => (
+        <a href={`#${room.slug}`} data-plan-room={room.slug} aria-label={room.title}>
+          <rect x={room.x} y={room.top} width={room.w} height={room.d} rx="0.08" />
+          {variant === "large" && (
+            <text x={room.x + room.w / 2} y={room.top + room.d / 2} text-anchor="middle" dominant-baseline="middle">
+              {room.title}
+            </text>
+          )}
+        </a>
+      ))
+    }
+    {
+      baths.map((bath) => (
+        <g class="plan__bath" aria-hidden="true">
+          <rect x={bath.x} y={bath.top} width={bath.w} height={bath.d} />
+          {variant === "large" && (
+            <text x={bath.x + bath.w / 2} y={bath.top + bath.d / 2} text-anchor="middle" dominant-baseline="middle">
+              Bath
+            </text>
+          )}
+        </g>
+      ))
+    }
+    <rect class="plan__outline" x="0" y="0" width={w} height={d} rx="0.1" />
+    <path class="plan__door" d={`M3.4 ${d} h1`} />
+    {variant === "large" && <text class="plan__front" x={w / 2} y={d + 0.95} text-anchor="middle">Garden and front door</text>}
+  </svg>
+</nav>

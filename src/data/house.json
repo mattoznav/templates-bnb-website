@@ -1,0 +1,81 @@
+{
+  "footprint": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "d": 10
+  },
+  "wallHeight": 2.8,
+  "rooms": [
+    {
+      "slug": "lounge",
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "d": 5
+    },
+    {
+      "slug": "breakfast-room",
+      "x": 6,
+      "y": 0,
+      "w": 5,
+      "d": 5
+    },
+    {
+      "slug": "garden-room",
+      "x": 11,
+      "y": 0,
+      "w": 5,
+      "d": 5
+    },
+    {
+      "slug": "courtyard-suite",
+      "x": 0,
+      "y": 5,
+      "w": 9,
+      "d": 5
+    },
+    {
+      "slug": "linen-room",
+      "x": 9,
+      "y": 5,
+      "w": 7,
+      "d": 5
+    }
+  ],
+  "baths": [
+    {
+      "room": "garden-room",
+      "x": 11,
+      "y": 3.25,
+      "w": 1.6,
+      "d": 1.75,
+      "door": {
+        "side": "south",
+        "at": 11.75
+      }
+    },
+    {
+      "room": "linen-room",
+      "x": 14.05,
+      "y": 5,
+      "w": 1.95,
+      "d": 1.75,
+      "door": {
+        "side": "north",
+        "at": 14.95
+      }
+    },
+    {
+      "room": "courtyard-suite",
+      "x": 7.35,
+      "y": 6.3,
+      "w": 1.65,
+      "d": 3.7,
+      "door": {
+        "side": "west",
+        "at": 7.6
+      }
+    }
+  ]
+}
