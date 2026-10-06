@@ -3,12 +3,13 @@ import "@fontsource-variable/newsreader";
 import "@fontsource-variable/manrope";
 import "../styles/global.css";
 import { site, bookingLink } from "../data/site";
+import { withBase } from "../lib/paths";
 
 type Props = { title?: string; description?: string };
 const { title, description = site.description } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL("/media/rooms/exterior.webp", Astro.site);
+const ogImage = new URL(withBase("/media/rooms/exterior.webp"), Astro.site);
 ---
 
 <!doctype html>
@@ -19,25 +20,25 @@ const ogImage = new URL("/media/rooms/exterior.webp", Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
     <meta name="theme-color" content="#f4efe6" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
-    <link rel="preload" href="/media/rooms/exterior.webp" as="image" />
+    <link rel="preload" href={withBase("/media/rooms/exterior.webp")} as="image" />
   </head>
   <body>
     <a class="skip" href="#content">Skip to content</a>
     <header class="topbar">
-      <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <a class="brand" href={withBase("/")} aria-label={`${site.name}, home`}>
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 5l12 10v12H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /><path d="M16 27V16m0 0-4-4m4 4 4-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
         <span>{site.name}</span>
       </a>
       <nav aria-label="Main">
-        <a href="/#lounge">The house</a>
-        <a href="/#garden-room">Rooms</a>
-        <a href="/#location">Getting here</a>
+        <a href={withBase("/#lounge")}>The house</a>
+        <a href={withBase("/#garden-room")}>Rooms</a>
+        <a href={withBase("/#location")}>Getting here</a>
       </nav>
       <a class="button button--small" href={bookingLink()} rel="noopener">Book a stay</a>
     </header>

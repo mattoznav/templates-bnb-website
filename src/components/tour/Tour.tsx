@@ -2,16 +2,17 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { useGLTF, useProgress } from "@react-three/drei";
 import * as THREE from "three";
+import { withBase } from "../../lib/paths";
 import { canShowTour, markReady, tour } from "../../lib/tour";
 
 // Large screens get lightmaps at twice the resolution; phones and small laptops the lighter file
-const MODEL_HD = "/models/alder-house-hd.glb";
-const MODEL_SD = "/models/alder-house.glb";
+const MODEL_HD = withBase("/models/alder-house-hd.glb");
+const MODEL_SD = withBase("/models/alder-house.glb");
 const pickModel = () =>
   window.innerWidth * Math.min(window.devicePixelRatio, 2) >= 2000 && !window.matchMedia("(pointer: coarse)").matches
     ? MODEL_HD
     : MODEL_SD;
-const DRACO = "/draco/";
+const DRACO = withBase("/draco/");
 const SKY = "#dfe6e4";
 
 type Point = [number, number, number];

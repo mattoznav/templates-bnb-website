@@ -59,8 +59,8 @@ tour.onRoomClick = scrollToStop;
 document.addEventListener("click", (event) => {
   const link = (event.target as Element).closest<HTMLAnchorElement | SVGAElement>("a[href]");
   if (!link) return;
-  const href = link.getAttribute("href") ?? "";
-  const hash = href.startsWith("#") ? href.slice(1) : href.startsWith("/#") ? href.slice(2) : "";
+  const url = new URL(link.getAttribute("href") ?? "", location.href);
+  const hash = url.pathname === location.pathname ? url.hash.slice(1) : "";
   if (!hash || !document.getElementById(hash)) return;
   event.preventDefault();
   scrollToStop(hash);

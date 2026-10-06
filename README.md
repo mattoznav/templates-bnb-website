@@ -11,6 +11,7 @@ There is no booking engine and no backend: every "Book" button links to the prop
 | Scroll | [Lenis](https://lenis.darkroom.engineering) for smooth scrolling, [GSAP](https://gsap.com) ScrollTrigger for the card animations |
 | Model | Built by a Python script in [Blender](https://www.blender.org) 5.2 and dressed with CC0 assets from [Poly Haven](https://polyhaven.com); lighting baked with Cycles, exported as glTF with Draco and WebP |
 | Runs on | `localhost:4324` |
+| Live demo | [mattoznav.github.io/templates-bnb-website](https://mattoznav.github.io/templates-bnb-website/) |
 
 ## Requirements
 
@@ -60,6 +61,7 @@ If the device cannot run WebGL, or the visitor prefers reduced motion, the 3D is
 | Colours and fonts | `src/styles/global.css` |
 | Address, travel times, "Open in Maps" link | `address`, `travel` and `mapsUrl` in `src/data/site.ts` |
 | Domain | `site` in `astro.config.mjs` |
+| Links to files in `public/` | wrap the path in `withBase()` from `src/lib/paths.ts`, so the site also works under a sub-path |
 
 Coordinates follow the model: `x` runs along the front of the house, `y` from the front to the back and `z` up, with the front left corner of the house at `0, 0, 0`.
 
@@ -90,6 +92,10 @@ npm run model -- --skip-photos         # model only
 
 `npm run assets` needs Python 3 and an internet connection; the files land in `model/assets/`, which git ignores. `npm run model` expects `blender` on the `PATH`. On macOS with Homebrew: `brew install --cask blender`. The script reads the room layout from `src/data/house.json`, so the floor plan on the site and the model always agree; the furniture positions are in the script itself.
 
+## Publish on GitHub Pages
+
+`.github/workflows/pages.yml` builds the site and publishes it on GitHub Pages at every push to `main`. To use it in a copy of the repository, open **Settings > Pages** and set **Source** to **GitHub Actions**. The workflow passes the Pages address to the build through `SITE_URL` and `BASE_PATH`, so the site works under `https://<user>.github.io/<repository>/`; with a custom domain the path is simply `/`.
+
 ## Structure
 
 ```
@@ -102,7 +108,9 @@ src/data/                  Site settings, tour stops, house layout
 src/components/tour/       The React Three Fiber scene
 src/components/            Floor plan and the "Getting here" section
 src/scripts/scroll.ts      Scroll position, floor plan highlight, card animations
+src/lib/paths.ts           withBase(), for paths that must follow the site's base
 src/pages/                 The tour page and the 404 page
+.github/workflows/         GitHub Pages deployment
 ```
 
 ## Assets and licenses

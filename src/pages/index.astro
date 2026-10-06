@@ -5,6 +5,7 @@ import Location from "../components/Location.astro";
 import Tour from "../components/tour/Tour";
 import { stops, rooms, cardSide } from "../data/stops";
 import { site, bookingLink, formatPrice } from "../data/site";
+import { withBase } from "../lib/paths";
 
 const schema = {
   "@context": "https://schema.org",
@@ -13,7 +14,7 @@ const schema = {
   description: site.description,
   email: site.email,
   url: Astro.site?.href,
-  image: new URL("/media/rooms/exterior.webp", Astro.site).href,
+  image: new URL(withBase("/media/rooms/exterior.webp"), Astro.site).href,
   checkinTime: "15:00",
   checkoutTime: "11:00",
   numberOfRooms: rooms.filter((room) => room.kind === "room").length,
@@ -33,7 +34,7 @@ const schema = {
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
   <div class="stage">
-    <img class="stage__poster" src="/media/rooms/exterior.webp" alt="" width="1600" height="1000" />
+    <img class="stage__poster" src={withBase("/media/rooms/exterior.webp")} alt="" width="1600" height="1000" />
     <Tour
       client:only="react"
       stops={stops.map((stop) => ({ camera: stop.camera, target: stop.target, side: cardSide(stop) }))}
@@ -57,7 +58,7 @@ const schema = {
           ) : (
             <article class="card" data-reveal>
               {stop.photo && (
-                <img class="card__photo" src={stop.photo} alt={`${stop.title}, rendered`} width="1600" height="1000" loading="lazy" decoding="async" />
+                <img class="card__photo" src={withBase(stop.photo)} alt={`${stop.title}, rendered`} width="1600" height="1000" loading="lazy" decoding="async" />
               )}
               <div class="card__body">
                 <h2>{stop.title}</h2>

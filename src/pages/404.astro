@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import { withBase } from "../lib/paths";
 ---
 
 <Base title="Page not found">
@@ -8,7 +9,7 @@ import Base from "../layouts/Base.astro";
       <p class="eyebrow">404</p>
       <h1>This room does not exist</h1>
       <p class="hero__text">The page you were looking for is not part of the house.</p>
-      <a class="button" href="/">Back to the house</a>
+      <a class="button" href={withBase("/")}>Back to the house</a>
     </div>
   </main>
 </Base>
